@@ -17,6 +17,7 @@ interface HomeScreenProps {
 export type Research = {
   id: string;
   title: string;
+  date: string;
   image: string;
   description: string;
 };
@@ -25,18 +26,21 @@ const mockResearches: Research[] = [
   {
     id: "1",
     title: "Pesquisa de Satisfação - Atendimento",
+    date: "2024-01-01",
     description: "Avaliação do atendimento ao cliente",
     image: placeholderImages.research1.uri,
   },
   {
     id: "2",
     title: "Pesquisa de Satisfação - Produto",
+    date: "2024-01-01",
     description: "Avaliação da qualidade do produto",
     image: placeholderImages.research2.uri,
   },
   {
     id: "3",
     title: "Pesquisa de Satisfação - Entrega",
+    date: "2024-01-01",
     description: "Avaliação do serviço de entrega",
     image: placeholderImages.research3.uri,
   },
