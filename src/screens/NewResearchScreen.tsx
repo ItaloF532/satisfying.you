@@ -5,23 +5,14 @@ import {
   ScrollView,
   TouchableOpacity,
   Platform,
-  Alert,
 } from "react-native";
 import { Appbar, Text, TextInput, Button } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AVAILABLE_ICONS, IconName } from "../const/AvailableIcons";
 
-interface ModifyResearchScreenProps {
+interface NewResearchScreenProps {
   navigation: any;
-  route: {
-    params: {
-      id: string;
-      title: string;
-      image: string;
-      description: string;
-    };
-  };
 }
 
 const styles = StyleSheet.create({
@@ -108,34 +99,25 @@ const styles = StyleSheet.create({
     backgroundColor: "#573FBA",
     borderRadius: 4,
   },
-  buttonContainer: {
-    marginTop: 20,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
   saveButton: {
     backgroundColor: "#37BD6D",
     borderRadius: 0,
+    marginTop: 20,
     marginBottom: 12,
   },
 });
 
-const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
+const NewResearchScreen: React.FC<NewResearchScreenProps> = ({
   navigation,
-  route,
 }) => {
-  const { id, title, image, description } = route.params;
+  const [researchName, setResearchName] = useState("");
 
-  const [researchName, setResearchName] = useState(title);
+  const [selectedIcon, setSelectedIcon] = useState<IconName>("emoticon");
+  const [showIconPicker, setShowIconPicker] = useState(false);
+
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const defaultIcon: IconName = AVAILABLE_ICONS.includes(image as IconName)
-    ? (image as IconName)
-    : "emoticon";
-
-  const [selectedIcon, setSelectedIcon] = useState<IconName>(defaultIcon);
-  const [showIconPicker, setShowIconPicker] = useState(false);
   const [nameError, setNameError] = useState("");
 
   const onChangeDate = (event: any, selectedDate?: Date) => {
@@ -144,13 +126,8 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
       return;
     }
 
-    if (selectedDate) {
-      setSelectedDate(selectedDate);
-    }
-
-    if (Platform.OS === "android") {
-      setShowDatePicker(false);
-    }
+    if (selectedDate) setSelectedDate(selectedDate);
+    if (Platform.OS === "android") setShowDatePicker(false);
   };
 
   const handleSave = () => {
@@ -159,30 +136,7 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
       return;
     }
 
-    // TODO: save action
     navigation.goBack();
-  };
-
-  const handleDelete = () => {
-    Alert.alert(
-      "Excluir Pesquisa",
-      "Tem certeza que deseja excluir esta pesquisa? Esta ação não pode ser desfeita.",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Excluir",
-          onPress: () => {
-            // TODO: implement delete action
-
-            navigation.goBack();
-          },
-          style: "destructive",
-        },
-      ]
-    );
   };
 
   const renderDatePicker = () => {
@@ -206,7 +160,7 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
           iconColor="#573FBA"
           onPress={() => navigation.goBack()}
         />
-        <Appbar.Content color="white" title="Modificar Pesquisa" />
+        <Appbar.Content color="white" title="Nova Pesquisa" />
       </Appbar.Header>
 
       <ScrollView style={styles.content}>
@@ -297,37 +251,17 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
             </View>
           )}
 
-          <View style={styles.buttonContainer}>
-            <Button
-              mode="contained"
-              onPress={handleSave}
-              style={[styles.saveButton, { flex: 1 }]}
-            >
-              Salvar Alterações
-            </Button>
-
-            <TouchableOpacity
-              onPress={handleDelete}
-              style={{
-                bottom: 4,
-                marginLeft: 8,
-                alignItems: "center",
-                flexDirection: "column",
-              }}
-            >
-              <MaterialCommunityIcons
-                name="trash-can"
-                size={28}
-                color="white"
-              />
-
-              <Text style={{ color: "white", fontSize: 12 }}>Apagar</Text>
-            </TouchableOpacity>
-          </View>
+          <Button
+            mode="contained"
+            onPress={handleSave}
+            style={styles.saveButton}
+          >
+            Criar Pesquisa
+          </Button>
         </View>
       </ScrollView>
     </View>
   );
 };
 
-export default ModifyResearchScreen;
+export default NewResearchScreen;
