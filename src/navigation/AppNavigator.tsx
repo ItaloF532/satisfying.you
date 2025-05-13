@@ -92,29 +92,21 @@ const CustomDrawerContent = (props: any) => {
   );
 };
 
-const ResearchStack = () => {
+const HomeStack = () => {
   return (
     <Stack.Navigator
       initialRouteName="Home"
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="NewResearch" component={NewResearchScreen} />
-      <Stack.Screen name="ModifyResearch" component={ModifyResearchScreen} />
-      <Stack.Screen name="ResearchActions" component={ResearchActionsScreen} />
-      <Stack.Screen
-        name="SatisfactionCollection"
-        component={SatisfactionCollectionScreen}
-      />
-      <Stack.Screen name="ThankYou" component={ThankYouScreen} />
     </Stack.Navigator>
   );
 };
 
-const ResearchDrawer = () => {
+const HomeDrawer = () => {
   return (
     <Drawer.Navigator
-      initialRouteName="ResearchStack"
+      initialRouteName="HomeDrawer"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerTintColor: "white",
@@ -123,8 +115,8 @@ const ResearchDrawer = () => {
       }}
     >
       <Drawer.Screen
-        name="ResearchStack"
-        component={ResearchStack}
+        name="HomeDrawer"
+        component={HomeStack}
         options={{
           title: "Pesquisas",
           drawerLabel: "Pesquisas",
@@ -151,7 +143,18 @@ const AppNavigator = () => {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-        <Stack.Screen name="Research" component={ResearchDrawer} />
+        <Stack.Screen name="Home" component={HomeDrawer} />
+        <Stack.Screen name="NewResearch" component={NewResearchScreen} />
+        <Stack.Screen name="ModifyResearch" component={ModifyResearchScreen} />
+        <Stack.Screen
+          name="ResearchActions"
+          component={ResearchActionsScreen}
+        />
+        <Stack.Screen
+          name="SatisfactionCollection"
+          component={SatisfactionCollectionScreen}
+        />
+        <Stack.Screen name="ThankYou" component={ThankYouScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

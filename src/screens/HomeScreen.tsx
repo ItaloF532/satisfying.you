@@ -14,24 +14,31 @@ interface HomeScreenProps {
   navigation: any;
 }
 
-const mockResearches = [
+export type Research = {
+  id: string;
+  title: string;
+  image: string;
+  description: string;
+};
+
+const mockResearches: Research[] = [
   {
     id: "1",
     title: "Pesquisa de Satisfação - Atendimento",
     description: "Avaliação do atendimento ao cliente",
-    image: placeholderImages.research1,
+    image: placeholderImages.research1.uri,
   },
   {
     id: "2",
     title: "Pesquisa de Satisfação - Produto",
     description: "Avaliação da qualidade do produto",
-    image: placeholderImages.research2,
+    image: placeholderImages.research2.uri,
   },
   {
     id: "3",
     title: "Pesquisa de Satisfação - Entrega",
     description: "Avaliação do serviço de entrega",
-    image: placeholderImages.research3,
+    image: placeholderImages.research3.uri,
   },
 ];
 
@@ -68,8 +75,8 @@ const styles = StyleSheet.create({
 });
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const handleResearchPress = (id: string) => {
-    navigation.navigate("ResearchActions", { researchId: id });
+  const handleResearchPress = (research: Research) => {
+    navigation.navigate("ResearchActions", research);
   };
 
   const handleNewResearch = () => {
@@ -102,11 +109,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           data={mockResearches}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleResearchPress(item.id)}>
+            <TouchableOpacity onPress={() => handleResearchPress(item)}>
               <ResearchCardComponent
                 title={item.title}
                 description={item.description}
-                image={item.image}
+                image={{ uri: item.image }}
               />
             </TouchableOpacity>
           )}

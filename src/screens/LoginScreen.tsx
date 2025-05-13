@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import { validateEmail } from "../utils/validation";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -69,7 +69,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     }
 
     setEmailError("");
-    navigation.navigate("Research");
+    navigation.navigate("Home");
   };
 
   return (

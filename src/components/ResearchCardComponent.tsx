@@ -1,6 +1,6 @@
 import React from "react";
-import { View, Image, StyleSheet, ImageSourcePropType } from "react-native";
 import { Card, Text } from "react-native-paper";
+import { Image, StyleSheet, ImageSourcePropType } from "react-native";
 
 interface ResearchCardComponentProps {
   title: string;
