@@ -59,7 +59,11 @@ const SatisfactionCollectionScreen: React.FC<
   const handleSubmit = (rating: number) => {
     // TODO: save action
     setSelectedRating(rating);
-    navigation.navigate("ThankYou");
+    navigation.navigate("ThankYou", {
+      id,
+      title,
+      image,
+    });
   };
 
   return (

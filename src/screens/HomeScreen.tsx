@@ -6,12 +6,14 @@ import {
   TouchableOpacity,
   BackHandler,
 } from "react-native";
+import { NavigationProp } from "@react-navigation/native";
 import { Button, Text } from "react-native-paper";
 import ResearchCardComponent from "../components/ResearchCardComponent";
 import { placeholderImages } from "../utils/placeholderImages";
 
 interface HomeScreenProps {
-  navigation: any;
+  navigation: NavigationProp<any>;
+  route: any;
 }
 
 export type Research = {
@@ -78,7 +80,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   const handleResearchPress = (research: Research) => {
     navigation.navigate("ResearchActions", research);
   };
@@ -88,11 +90,26 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   };
 
   useEffect(() => {
+    navigation.addListener("state", (state) => {
+      console.log("state", state);
+    });
+
     const backAction = () => {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Login" }],
-      });
+      const parentNavigation = navigation.getParent();
+
+      if (parentNavigation) {
+        const parentState = parentNavigation.getState();
+        const currentRouteName = parentState.routes[parentState.index].name;
+
+        if (currentRouteName === "Home") {
+          parentNavigation.reset({
+            index: 0,
+            routes: [{ name: "Login" }],
+          });
+          return true;
+        }
+      }
+      navigation.goBack();
       return true;
     };
 

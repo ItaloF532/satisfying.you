@@ -4,6 +4,13 @@ import { View, StyleSheet } from "react-native";
 
 interface ThankYouScreenProps {
   navigation: any;
+  route: {
+    params: {
+      id: string;
+      title: string;
+      image: string;
+    };
+  };
 }
 
 const styles = StyleSheet.create({
@@ -23,10 +30,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const ThankYouScreen: React.FC<ThankYouScreenProps> = ({ navigation }) => {
+const ThankYouScreen: React.FC<ThankYouScreenProps> = ({
+  navigation,
+  route,
+}) => {
+  const { id, title, image } = route.params;
+
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate("Home");
+      navigation.pop();
     }, 3000);
   }, []);
 
