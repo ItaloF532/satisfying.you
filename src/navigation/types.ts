@@ -7,10 +7,30 @@ export type RootStackParamList = {
   ForgotPassword: undefined;
   Home: undefined;
   NewResearch: undefined;
-  ModifyResearch: { researchId: string };
-  ResearchActions: { researchId: string };
-  SatisfactionCollection: { researchId: string };
-  ThankYou: undefined;
+  ModifyResearch: {
+    id: string;
+    title: string;
+    image: string;
+    description: string;
+  };
+  ResearchActions: {
+    id: string;
+    title: string;
+    image: string;
+    description: string;
+  };
+  SatisfactionCollection: {
+    id: string;
+    title: string;
+    image: string;
+    description: string;
+  };
+  ThankYou: { id: string; title: string; image: string };
+  ResearchReport: {
+    id: string;
+    title: string;
+    data: Array<{ value: number; count: number }>;
+  };
 };
 
 export type NavigationProp<T extends keyof RootStackParamList> =

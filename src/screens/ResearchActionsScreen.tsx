@@ -70,7 +70,11 @@ const ResearchActionsScreen: React.FC<ResearchActionsScreenProps> = ({
   };
 
   const handleReport = () => {
-    alert("Relatórios serão implementados na Parte 2");
+    navigation.navigate("ResearchReport", {
+      id,
+      title,
+      image,
+    });
   };
 
   return (

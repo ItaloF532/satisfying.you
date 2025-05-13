@@ -21,6 +21,7 @@ import ModifyResearchScreen from "../screens/ModifyResearchScreen";
 import ResearchActionsScreen from "../screens/ResearchActionsScreen";
 import SatisfactionCollectionScreen from "../screens/SatisfactionCollectionScreen";
 import ThankYouScreen from "../screens/ThankYouScreen";
+import ResearchReportScreen from "../screens/ResearchReportScreen";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -146,6 +147,10 @@ const AppNavigator = () => {
           <Stack.Screen
             name="SatisfactionCollection"
             component={SatisfactionCollectionScreen}
+          />
+          <Stack.Screen
+            name="ResearchReport"
+            component={ResearchReportScreen}
           />
           <Stack.Screen name="ThankYou" component={ThankYouScreen} />
         </Stack.Group>
