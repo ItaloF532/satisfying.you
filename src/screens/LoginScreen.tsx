@@ -69,7 +69,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     }
 
     setEmailError("");
-    navigation.navigate("Home");
+    navigation.navigate("Research");
   };
 
   return (
