@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { View, StyleSheet, Image } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import { validateEmail } from "../utils/validation";
-import { placeholderImages } from "../utils/placeholderImages";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 interface LoginScreenProps {
