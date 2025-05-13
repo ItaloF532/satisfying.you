@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image, ScrollView } from "react-native";
-import { TextInput, Button, Text, Appbar, Snackbar } from "react-native-paper";
 import { validateEmail } from "../utils/validation";
-import { placeholderImages } from "../utils/placeholderImages";
+import { View, StyleSheet, ScrollView } from "react-native";
+import { TextInput, Button, Text, Appbar, Snackbar } from "react-native-paper";
 
 interface ForgotPasswordScreenProps {
   navigation: any;
