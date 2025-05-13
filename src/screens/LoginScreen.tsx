@@ -103,6 +103,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             textColor="#3F92C5"
             onChangeText={setPassword}
             style={styles.input}
+            secureTextEntry
           />
         </View>
 

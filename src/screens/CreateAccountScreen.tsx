@@ -55,7 +55,7 @@ const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
     let hasError = false;
 
     if (!validateEmail(email)) {
-      setEmailError("Email inválido");
+      setEmailError("E-mail inválido");
       hasError = true;
     } else {
       setEmailError("");
@@ -88,6 +88,7 @@ const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
           <TextInput
             value={email}
             onChangeText={setEmail}
+            textColor="#3F92C5"
             mode="outlined"
             error={!!emailError}
             style={styles.input}
@@ -103,6 +104,7 @@ const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
             value={password}
             onChangeText={setPassword}
             secureTextEntry
+            textColor="#3F92C5"
             mode="outlined"
             style={styles.input}
           />
@@ -115,6 +117,7 @@ const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
             onChangeText={setConfirmPassword}
             secureTextEntry
             mode="outlined"
+            textColor="#3F92C5"
             error={!!passwordError}
             style={styles.input}
           />
