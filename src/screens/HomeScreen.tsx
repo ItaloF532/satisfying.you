@@ -9,7 +9,7 @@ import {
 import { NavigationProp } from "@react-navigation/native";
 import { Button, Text } from "react-native-paper";
 import ResearchCardComponent from "../components/ResearchCardComponent";
-import { placeholderImages } from "../utils/placeholderImages";
+import { AVAILABLE_ICONS } from "../const/AvailableIcons";
 
 interface HomeScreenProps {
   navigation: NavigationProp<any>;
@@ -30,21 +30,21 @@ const mockResearches: Research[] = [
     title: "Pesquisa de Satisfação - Atendimento",
     date: "2024-01-01",
     description: "Avaliação do atendimento ao cliente",
-    image: placeholderImages.research1.uri,
+    image: AVAILABLE_ICONS[Math.floor(Math.random() * AVAILABLE_ICONS.length)],
   },
   {
     id: "2",
     title: "Pesquisa de Satisfação - Produto",
     date: "2024-01-01",
     description: "Avaliação da qualidade do produto",
-    image: placeholderImages.research2.uri,
+    image: AVAILABLE_ICONS[Math.floor(Math.random() * AVAILABLE_ICONS.length)],
   },
   {
     id: "3",
     title: "Pesquisa de Satisfação - Entrega",
     date: "2024-01-01",
     description: "Avaliação do serviço de entrega",
-    image: placeholderImages.research3.uri,
+    image: AVAILABLE_ICONS[Math.floor(Math.random() * AVAILABLE_ICONS.length)],
   },
 ];
 
@@ -134,7 +134,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
               <ResearchCardComponent
                 title={item.title}
                 description={item.description}
-                image={{ uri: item.image }}
+                image={item.image}
               />
             </TouchableOpacity>
           )}
