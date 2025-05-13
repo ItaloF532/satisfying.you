@@ -24,6 +24,19 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/AveriaLibre-Regular.ttf",
+            "./assets/fonts/AveriaLibre-Bold.ttf",
+            "./assets/fonts/AveriaLibre-Italic.ttf",
+            "./assets/fonts/AveriaLibre-BoldItalic.ttf"
+          ]
+        }
+      ]
+    ]
   }
 }
