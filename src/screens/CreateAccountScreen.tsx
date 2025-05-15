@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { TextInput, Button, Text, Appbar } from "react-native-paper";
-import { validateEmail, validatePasswordMatch } from "../utils/validation";
+import {
+  validateEmail,
+  validatePassword,
+  validatePasswordMatch,
+} from "../utils/validation";
 
 interface CreateAccountScreenProps {
   navigation: any;
@@ -63,6 +67,15 @@ const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
 
     if (!validatePasswordMatch(password, confirmPassword)) {
       setPasswordError("As senhas não coincidem");
+      hasError = true;
+    } else {
+      setPasswordError("");
+    }
+
+    if (!validatePassword(password)) {
+      setPasswordError(
+        "As senha deve conter ao menos 8 caracteres, uma letra maiúscula, uma letra minúscula, um número e um caractere especial"
+      );
       hasError = true;
     } else {
       setPasswordError("");

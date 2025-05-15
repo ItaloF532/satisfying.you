@@ -2,7 +2,7 @@ import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import { Divider, Icon } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -61,6 +61,12 @@ const CustomDrawerContent = (props: any) => {
       </View>
       <DrawerItemList {...props} />
       <View style={styles.logoutSection}>
+      <TouchableOpacity onPress={() => props.navigation.reset({
+                index: 0,
+                routes: [{ name: "Login" }],
+              })
+            }
+          >
         <View
           style={{
             flex: 1,
@@ -87,7 +93,8 @@ const CustomDrawerContent = (props: any) => {
           >
             Sair
           </Text>
-        </View>
+          </View>
+          </TouchableOpacity>
       </View>
     </DrawerContentScrollView>
   );
