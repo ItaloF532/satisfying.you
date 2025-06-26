@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import { TextInput, Button, Text, Appbar } from "react-native-paper";
 import {
   validateEmail,
   validatePassword,
   validatePasswordMatch,
 } from "../utils/validation";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../services/firebaseConfig";
 
 interface CreateAccountScreenProps {
   navigation: any;
@@ -55,7 +57,7 @@ const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleCreateAccount = () => {
+  const handleCreateAccount = async () => {
     let hasError = false;
 
     if (!validateEmail(email)) {
@@ -81,7 +83,28 @@ const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
       setPasswordError("");
     }
 
-    if (!hasError) navigation.navigate("Login");
+    if (!hasError) {
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        Alert.alert("Sucesso", "Conta criada com sucesso!");
+        navigation.navigate("Login");
+      } catch (error: any) {
+        switch (error.code) {
+          case "auth/email-already-in-use":
+            setEmailError("Este e-mail já está em uso.");
+            break;
+          case "auth/invalid-email":
+            setEmailError("O formato do e-mail é inválido.");
+            break;
+          case "auth/weak-password":
+            setPasswordError("A senha é muito fraca.");
+            break;
+          default:
+            Alert.alert("Erro ao criar conta", error.message);
+            break;
+        }
+      }
+    }
   };
 
   return (
@@ -142,7 +165,7 @@ const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
         <Button
           mode="contained"
           style={styles.button}
-          onPress={handleCreateAccount}
+          onPress={() => handleCreateAccount()}
         >
           CADASTRAR
         </Button>
