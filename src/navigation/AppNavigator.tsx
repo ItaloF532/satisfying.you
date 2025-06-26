@@ -2,14 +2,22 @@ import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
-import { Divider, Icon } from "react-native-paper";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
+import { Divider } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
-
 import {
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer";
+
+import { useAuth } from "../contexts/AuthContext";
 
 // Screens
 import LoginScreen from "../screens/LoginScreen";
@@ -22,9 +30,10 @@ import ResearchActionsScreen from "../screens/ResearchActionsScreen";
 import SatisfactionCollectionScreen from "../screens/SatisfactionCollectionScreen";
 import ThankYouScreen from "../screens/ThankYouScreen";
 import ResearchReportScreen from "../screens/ResearchReportScreen";
+import { RootStackParamList } from "./types";
 
 const Drawer = createDrawerNavigator();
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 
 const styles = StyleSheet.create({
   drawerContent: {
@@ -46,55 +55,44 @@ const styles = StyleSheet.create({
     marginBottom: 33,
     paddingHorizontal: 16,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
 const CustomDrawerContent = (props: any) => {
-  const userEmail = "email@example.com";
+  const { user, signOut } = useAuth();
 
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.userSection}>
-        <Text style={styles.emailText}>{userEmail}</Text>
+        <Text style={styles.emailText}>{user?.email}</Text>
         <Divider
           style={{ height: 1, marginTop: 33, backgroundColor: "white" }}
         />
       </View>
       <DrawerItemList {...props} />
       <View style={styles.logoutSection}>
-      <TouchableOpacity onPress={() => props.navigation.reset({
-                index: 0,
-                routes: [{ name: "Login" }],
-              })
-            }
+        <TouchableOpacity onPress={signOut}>
+          <View
+            style={{
+              flex: 1,
+              alignItems: "flex-end",
+              flexDirection: "row",
+              justifyContent: "flex-start",
+            }}
           >
-        <View
-          style={{
-            flex: 1,
-            alignItems: "flex-end",
-            flexDirection: "row",
-            justifyContent: "flex-start",
-          }}
-        >
-          <MaterialIcons
-            name="logout"
-            size={20}
-            style={{ marginRight: 10 }}
-            color="white"
-          />
-
-          <Text
-            style={styles.emailText}
-            onPress={() =>
-              props.navigation.reset({
-                index: 0,
-                routes: [{ name: "Login" }],
-              })
-            }
-          >
-            Sair
-          </Text>
+            <MaterialIcons
+              name="logout"
+              size={20}
+              style={{ marginRight: 10 }}
+              color="white"
+            />
+            <Text style={styles.emailText}>Sair</Text>
           </View>
-          </TouchableOpacity>
+        </TouchableOpacity>
       </View>
     </DrawerContentScrollView>
   );
@@ -129,39 +127,55 @@ const HomeDrawer = () => {
   );
 };
 
-// TODO: ajustar rotas
+const AuthStack = () => (
+  <Stack.Navigator
+    initialRouteName="Login"
+    screenOptions={{ headerShown: false }}
+  >
+    <Stack.Screen name="Login" component={LoginScreen} />
+    <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
+    <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+  </Stack.Navigator>
+);
+
+const AppStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="Home" component={HomeDrawer} />
+    <Stack.Screen name="NewResearch" component={NewResearchScreen} />
+    <Stack.Screen
+      name="ModifyResearch"
+      component={ModifyResearchScreen as any}
+    />
+    <Stack.Screen
+      name="ResearchActions"
+      component={ResearchActionsScreen as any}
+    />
+    <Stack.Screen
+      name="SatisfactionCollection"
+      component={SatisfactionCollectionScreen as any}
+    />
+    <Stack.Screen
+      name="ResearchReport"
+      component={ResearchReportScreen as any}
+    />
+    <Stack.Screen name="ThankYou" component={ThankYouScreen as any} />
+  </Stack.Navigator>
+);
+
 const AppNavigator = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Login"
-        screenOptions={{ headerShown: false }}
-      >
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-        <Stack.Group screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Home" component={HomeDrawer} />
-          <Stack.Screen name="NewResearch" component={NewResearchScreen} />
-          <Stack.Screen
-            name="ModifyResearch"
-            component={ModifyResearchScreen}
-          />
-          <Stack.Screen
-            name="ResearchActions"
-            component={ResearchActionsScreen}
-          />
-          <Stack.Screen
-            name="SatisfactionCollection"
-            component={SatisfactionCollectionScreen}
-          />
-          <Stack.Screen
-            name="ResearchReport"
-            component={ResearchReportScreen}
-          />
-          <Stack.Screen name="ThankYou" component={ThankYouScreen} />
-        </Stack.Group>
-      </Stack.Navigator>
+      {user ? <AppStack /> : <AuthStack />}
     </NavigationContainer>
   );
 };

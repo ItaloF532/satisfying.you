@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
-import { validateEmail } from "../utils/validation";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../services/firebaseConfig";
 
 interface LoginScreenProps {
   navigation: any;
@@ -60,16 +61,30 @@ const styles = StyleSheet.create({
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = () => {
-    if (!validateEmail(email)) {
-      setEmailError("E-mail e/ou senha inválidos.");
+  const handleLogin = async () => {
+    if (email === "" || password === "") {
+      setError("E-mail e/ou senha inválidos.");
       return;
     }
 
-    setEmailError("");
-    navigation.navigate("Home");
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      // navigation is handled by AuthContext
+    } catch (err: any) {
+      console.error(err);
+      if (
+        err.code === "auth/user-not-found" ||
+        err.code === "auth/wrong-password" ||
+        err.code === "auth/invalid-email" ||
+        err.code === "auth/invalid-credential"
+      ) {
+        setError("E-mail e/ou senha inválidos.");
+      } else {
+        setError("Ocorreu um erro. Tente novamente mais tarde.");
+      }
+    }
   };
 
   return (
@@ -89,7 +104,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             mode="outlined"
             textColor="#3F92C5"
             onChangeText={setEmail}
-            error={!!emailError}
+            error={!!error}
             style={styles.input}
           />
         </View>
@@ -99,7 +114,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           <TextInput
             value={password}
             mode="outlined"
-            error={!!emailError}
+            error={!!error}
             textColor="#3F92C5"
             onChangeText={setPassword}
             style={styles.input}
@@ -107,7 +122,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           />
         </View>
 
-        {emailError && <Text style={styles.errorText}>{emailError}</Text>}
+        {error && <Text style={styles.errorText}>{error}</Text>}
 
         <Button
           mode="contained"
