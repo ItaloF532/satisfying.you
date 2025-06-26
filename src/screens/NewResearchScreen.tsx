@@ -5,11 +5,13 @@ import {
   ScrollView,
   TouchableOpacity,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { Appbar, Text, TextInput, Button } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AVAILABLE_ICONS, IconName } from "../const/AvailableIcons";
+import { FirestoreService } from "../services/FirestoreService";
 
 interface NewResearchScreenProps {
   navigation: any;
@@ -117,6 +119,7 @@ const NewResearchScreen: React.FC<NewResearchScreenProps> = ({
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [nameError, setNameError] = useState("");
 
@@ -130,13 +133,26 @@ const NewResearchScreen: React.FC<NewResearchScreenProps> = ({
     if (Platform.OS === "android") setShowDatePicker(false);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!researchName.trim()) {
       setNameError("O nome da pesquisa é obrigatório");
       return;
     }
 
-    navigation.goBack();
+    setLoading(true);
+    try {
+      await FirestoreService.save({
+        title: researchName,
+        date: selectedDate,
+        icon: selectedIcon,
+      });
+      navigation.goBack();
+    } catch (error) {
+      console.error("Failed to save research:", error);
+      // Here you could show an error message to the user
+    } finally {
+      setLoading(false);
+    }
   };
 
   const renderDatePicker = () => {
@@ -255,8 +271,9 @@ const NewResearchScreen: React.FC<NewResearchScreenProps> = ({
             mode="contained"
             onPress={handleSave}
             style={styles.saveButton}
+            disabled={loading}
           >
-            Criar Pesquisa
+            {loading ? <ActivityIndicator color="white" /> : "Criar Pesquisa"}
           </Button>
         </View>
       </ScrollView>

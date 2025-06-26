@@ -6,11 +6,13 @@ import {
   TouchableOpacity,
   Platform,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Appbar, Text, TextInput, Button } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AVAILABLE_ICONS, IconName } from "../const/AvailableIcons";
+import { FirestoreService } from "../services/FirestoreService";
 
 interface ModifyResearchScreenProps {
   navigation: any;
@@ -137,6 +139,7 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
   const [selectedIcon, setSelectedIcon] = useState<IconName>(defaultIcon);
   const [showIconPicker, setShowIconPicker] = useState(false);
   const [nameError, setNameError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const onChangeDate = (event: any, selectedDate?: Date) => {
     if (event.type === "dismissed") {
@@ -153,14 +156,26 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!researchName.trim()) {
       setNameError("O nome da pesquisa é obrigatório");
       return;
     }
 
-    // TODO: save action
-    navigation.goBack();
+    setLoading(true);
+    try {
+      await FirestoreService.update(id, {
+        title: researchName,
+        date: selectedDate,
+        icon: selectedIcon,
+      });
+      navigation.goBack();
+    } catch (error) {
+      console.error("Failed to update research:", error);
+      // Here you could show an error message to the user
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = () => {
@@ -302,8 +317,13 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
               mode="contained"
               onPress={handleSave}
               style={[styles.saveButton, { flex: 1 }]}
+              disabled={loading}
             >
-              Salvar Alterações
+              {loading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                "Salvar Alterações"
+              )}
             </Button>
 
             <TouchableOpacity

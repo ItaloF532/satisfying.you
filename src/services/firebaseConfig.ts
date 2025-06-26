@@ -11,7 +11,7 @@ const firebaseConfig = {
   storageBucket: `dispositivos-moveis-edf9e.firebasestorage.app`,
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
 
-export { auth };
+export { auth, firebaseApp };

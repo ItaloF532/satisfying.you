@@ -1,16 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
   FlatList,
   TouchableOpacity,
   BackHandler,
+  ActivityIndicator,
 } from "react-native";
-import { NavigationProp } from "@react-navigation/native";
+import { NavigationProp, useFocusEffect } from "@react-navigation/native";
 import { Button, Text } from "react-native-paper";
 import ResearchCardComponent from "../components/ResearchCardComponent";
 import { AVAILABLE_ICONS } from "../const/AvailableIcons";
 import { useAuth } from "../contexts/AuthContext";
+import { FirestoreService } from "../services/FirestoreService";
 
 interface HomeScreenProps {
   navigation: NavigationProp<any>;
@@ -24,30 +26,6 @@ export type Research = {
   image: string;
   description: string;
 };
-
-const mockResearches: Research[] = [
-  {
-    id: "1",
-    title: "Pesquisa de Satisfação - Atendimento",
-    date: "2024-01-01",
-    description: "Avaliação do atendimento ao cliente",
-    image: AVAILABLE_ICONS[Math.floor(Math.random() * AVAILABLE_ICONS.length)],
-  },
-  {
-    id: "2",
-    title: "Pesquisa de Satisfação - Produto",
-    date: "2024-01-01",
-    description: "Avaliação da qualidade do produto",
-    image: AVAILABLE_ICONS[Math.floor(Math.random() * AVAILABLE_ICONS.length)],
-  },
-  {
-    id: "3",
-    title: "Pesquisa de Satisfação - Entrega",
-    date: "2024-01-01",
-    description: "Avaliação do serviço de entrega",
-    image: AVAILABLE_ICONS[Math.floor(Math.random() * AVAILABLE_ICONS.length)],
-  },
-];
 
 const styles = StyleSheet.create({
   container: {
@@ -83,6 +61,27 @@ const styles = StyleSheet.create({
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   const { signOut } = useAuth();
+  const [researches, setResearches] = useState<Research[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchResearches = async () => {
+    try {
+      setLoading(true);
+      const fetchedResearches = await FirestoreService.search();
+      setResearches(fetchedResearches);
+    } catch (error) {
+      console.error("Failed to fetch researches:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchResearches();
+    }, [])
+  );
+
   const handleResearchPress = (research: Research) => {
     navigation.navigate("ResearchActions", research);
   };
@@ -116,13 +115,21 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     return () => backHandler.remove();
   }, [navigation]);
 
+  if (loading) {
+    return (
+      <View style={[styles.container, { justifyContent: "center" }]}>
+        <ActivityIndicator size="large" color="white" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      {mockResearches.length > 0 ? (
+      {researches.length > 0 ? (
         <FlatList
           horizontal
           showsHorizontalScrollIndicator={true}
-          data={mockResearches}
+          data={researches}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handleResearchPress(item)}>
