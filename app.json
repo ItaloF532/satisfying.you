@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "satisfying.you",
-    "slug": "satisfying.you",
+    "name": "satisfyingyou",
+    "slug": "satisfyingyou",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,14 +13,21 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.satisfyingyou.app",
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.satisfyingyou.app",
+      "googleServicesFile": "./google-services.json",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -36,7 +43,18 @@
             "./assets/fonts/AveriaLibre-BoldItalic.ttf"
           ]
         }
-      ]
-    ]
+      ],
+      "expo-build-properties",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "db3f234b-f46c-4521-be03-f5b6d17c3092"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/db3f234b-f46c-4521-be03-f5b6d17c3092"
+    }
   }
 }

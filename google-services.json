@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "495706170404",
+    "project_id": "dispositivos-moveis-edf9e",
+    "storage_bucket": "dispositivos-moveis-edf9e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:495706170404:android:a67ae3b6faa4837eefe4b1",
+        "android_client_info": {
+          "package_name": "com.dispositivos_moveis.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDH55-hxF7vSqsAEVqLQ57yRWJUa3AKk6M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
