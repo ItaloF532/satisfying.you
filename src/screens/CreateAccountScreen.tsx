@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
 const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
   navigation,
 }) => {
+  const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
@@ -85,10 +86,11 @@ const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
 
     if (!hasError) {
       try {
+        setLoading(true);
         await createUserWithEmailAndPassword(auth, email, password);
         Alert.alert("Sucesso", "Conta criada com sucesso!");
-        navigation.navigate("Login");
       } catch (error: any) {
+        console.log(error);
         switch (error.code) {
           case "auth/email-already-in-use":
             setEmailError("Este e-mail já está em uso.");
@@ -103,6 +105,8 @@ const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
             Alert.alert("Erro ao criar conta", error.message);
             break;
         }
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -165,7 +169,8 @@ const CreateAccountScreen: React.FC<CreateAccountScreenProps> = ({
         <Button
           mode="contained"
           style={styles.button}
-          onPress={() => handleCreateAccount()}
+          onPress={loading ? () => {} : () => handleCreateAccount()}
+          loading={loading}
         >
           CADASTRAR
         </Button>

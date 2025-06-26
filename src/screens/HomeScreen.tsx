@@ -10,6 +10,7 @@ import { NavigationProp } from "@react-navigation/native";
 import { Button, Text } from "react-native-paper";
 import ResearchCardComponent from "../components/ResearchCardComponent";
 import { AVAILABLE_ICONS } from "../const/AvailableIcons";
+import { useAuth } from "../contexts/AuthContext";
 
 interface HomeScreenProps {
   navigation: NavigationProp<any>;
@@ -81,6 +82,7 @@ const styles = StyleSheet.create({
 });
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
+  const { signOut } = useAuth();
   const handleResearchPress = (research: Research) => {
     navigation.navigate("ResearchActions", research);
   };
@@ -90,10 +92,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    navigation.addListener("state", (state) => {
-      console.log("state", state);
-    });
-
     const backAction = () => {
       const parentNavigation = navigation.getParent();
 
@@ -102,10 +100,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
         const currentRouteName = parentState.routes[parentState.index].name;
 
         if (currentRouteName === "Home") {
-          parentNavigation.reset({
-            index: 0,
-            routes: [{ name: "Login" }],
-          });
+          signOut();
           return true;
         }
       }
