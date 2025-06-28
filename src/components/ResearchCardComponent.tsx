@@ -1,13 +1,11 @@
 import React from "react";
 import { Card, Text } from "react-native-paper";
+import { Research } from "../screens/HomeScreen";
 import { StyleSheet, View, Image } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { IconName } from "../const/AvailableIcons";
 
 interface ResearchCardComponentProps {
-  title: string;
-  image: string;
-  description: string;
+  onTouch?: (research: Research) => void;
+  research: Research;
 }
 
 const styles = StyleSheet.create({
@@ -45,18 +43,20 @@ const styles = StyleSheet.create({
 });
 
 const ResearchCardComponent: React.FC<ResearchCardComponentProps> = ({
-  title,
-  description,
-  image,
+  research,
+  onTouch,
 }) => {
-  const isBase64 = image?.startsWith("data:image");
+  const isBase64 = research.image?.startsWith("data:image");
 
   return (
-    <Card style={styles.card}>
+    <Card
+      style={styles.card}
+      onPress={onTouch ? () => onTouch(research) : undefined}
+    >
       <View style={styles.image}>
         {isBase64 ? (
           <Image
-            source={{ uri: image }}
+            source={{ uri: research.image }}
             style={styles.image}
             resizeMode="cover"
           />
@@ -65,7 +65,7 @@ const ResearchCardComponent: React.FC<ResearchCardComponentProps> = ({
         )}
       </View>
       <Card.Content style={styles.content}>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title}>{research.title}</Text>
       </Card.Content>
     </Card>
   );

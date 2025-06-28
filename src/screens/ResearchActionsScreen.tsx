@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, Appbar } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -54,19 +54,14 @@ const ResearchActionsScreen: React.FC<ResearchActionsScreenProps> = ({
   navigation,
   route,
 }) => {
-  const { id, title, image, description } = route.params;
+  const [research, setResearch] = useState<Research>(route.params);
 
   const handleModify = () => {
-    navigation.navigate("ModifyResearch", { id, title, image, description });
+    navigation.navigate("ModifyResearch", { research, onSaved: setResearch });
   };
 
   const handleCollect = () => {
-    navigation.navigate("SatisfactionCollection", {
-      id,
-      title,
-      image,
-      description,
-    });
+    navigation.navigate("SatisfactionCollection", research);
   };
 
   const handleReport = () => {
@@ -81,7 +76,7 @@ const ResearchActionsScreen: React.FC<ResearchActionsScreenProps> = ({
           isLeading={false}
           onPress={() => navigation.goBack()}
         />
-        <Appbar.Content color="white" title={title} />
+        <Appbar.Content color="white" title={research.title} />
       </Appbar.Header>
 
       <View style={styles.content}>

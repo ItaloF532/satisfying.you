@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { validateEmail } from "../utils/validation";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { TextInput, Button, Text, Appbar, Snackbar } from "react-native-paper";
+import { FirestoreService } from "../services/FirestoreService";
 
 interface ForgotPasswordScreenProps {
   navigation: any;
@@ -56,7 +57,7 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
   const [submitted, setSubmitted] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
-  const handleRecoverPassword = () => {
+  const handleRecoverPassword = async () => {
     if (!validateEmail(email)) {
       setEmailError("E-mail inválido");
       return;
@@ -66,9 +67,8 @@ const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
     setSubmitted(true);
     setSnackbarVisible(true);
 
-    setTimeout(() => {
-      navigation.navigate("Login");
-    }, 2000);
+    await new FirestoreService().forgotPassword(email);
+    navigation.navigate("Login");
   };
 
   const onDismissSnackbar = () => setSnackbarVisible(false);

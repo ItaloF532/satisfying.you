@@ -68,6 +68,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
 
   const fetchResearches = async () => {
     try {
+      console.log("fetchResearches");
       setLoading(true);
       const fetchedResearches = await new FirestoreService().search(
         user?.uid ?? ""
@@ -90,9 +91,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
 
   useEffect(() => {
     fetchResearches();
-  }, []);
 
-  useEffect(() => {
     const backAction = () => {
       const parentNavigation = navigation.getParent();
 
@@ -109,13 +108,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
       return true;
     };
 
+    navigation.addListener("focus", () => {
+      fetchResearches();
+    });
+
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       backAction
     );
 
     return () => backHandler.remove();
-  }, [navigation]);
+  }, []);
 
   if (loading) {
     return (
@@ -133,16 +136,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
           showsHorizontalScrollIndicator={true}
           data={researches}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }: { item: Research }) => (
-            <TouchableOpacity onPress={() => handleResearchPress(item)}>
-              <ResearchCardComponent
-                title={item.title}
-                image={item.image}
-                description={item.description}
-              />
-            </TouchableOpacity>
-          )}
           contentContainerStyle={styles.listContainer}
+          renderItem={({ item }: { item: Research }) => (
+            <ResearchCardComponent
+              research={item}
+              onTouch={handleResearchPress}
+            />
+          )}
         />
       ) : (
         <View style={styles.emptyContainer}>

@@ -13,9 +13,10 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { firebaseApp } from "./firebaseConfig";
+import { auth, firebaseApp } from "./firebaseConfig";
 import { Research } from "../screens/HomeScreen";
 import { IconName } from "../const/AvailableIcons";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 export class FirestoreService {
   db: Firestore;
@@ -59,9 +60,7 @@ export class FirestoreService {
   async addVote(id: string, vote: string): Promise<void> {
     try {
       const researchDoc = doc(this.db, "researches", id);
-      await updateDoc(researchDoc, {
-        votes: arrayUnion(vote),
-      });
+      await updateDoc(researchDoc, { votes: arrayUnion(vote) });
     } catch (error) {
       console.error("Erro ao adicionar voto:", error);
       throw error;
@@ -91,6 +90,15 @@ export class FirestoreService {
       return researches;
     } catch (error) {
       console.error("Erro ao buscar pesquisas:", error);
+      throw error;
+    }
+  }
+
+  async forgotPassword(email: string): Promise<void> {
+    try {
+      await sendPasswordResetEmail(auth, email);
+    } catch (error) {
+      console.error("Erro ao enviar email de recuperação de senha:", error);
       throw error;
     }
   }

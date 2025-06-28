@@ -14,16 +14,12 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AVAILABLE_ICONS, IconName } from "../const/AvailableIcons";
 import { FirestoreService } from "../services/FirestoreService";
 import PickImageComponent from "../components/PickImageComponent";
+import { Research } from "./HomeScreen";
 
 interface ModifyResearchScreenProps {
   navigation: any;
   route: {
-    params: {
-      id: string;
-      title: string;
-      image: string;
-      description: string;
-    };
+    params: { research: Research; onSaved: (research: Research) => void };
   };
 }
 
@@ -127,12 +123,10 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
   navigation,
   route,
 }) => {
-  const { id, title, image, description } = route.params;
-
-  const [researchName, setResearchName] = useState(title);
+  console.log("route", route);
+  const [research, setResearch] = useState(route.params.research);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [pickedImage, setPickedImage] = useState<string | null>(image);
 
   const [nameError, setNameError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -154,18 +148,19 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
   };
 
   const handleSave = async () => {
-    if (!researchName.trim()) {
+    if (!research.title.trim()) {
       setNameError("O nome da pesquisa é obrigatório");
       return;
     }
 
     setLoading(true);
     try {
-      await new FirestoreService().update(id, {
-        title: researchName,
+      await new FirestoreService().update(research.id, {
+        title: research.title,
         date: selectedDate.toISOString(),
-        image: pickedImage ?? "",
+        image: research.image,
       });
+      route.params.onSaved(research);
       navigation.goBack();
     } catch (error) {
       console.error("Failed to update research:", error);
@@ -189,8 +184,11 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
           onPress: async () => {
             setDeleting(true);
             try {
-              await new FirestoreService().delete(id);
-              navigation.goBack();
+              await new FirestoreService().delete(research.id);
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "Home" }],
+              });
             } catch (error) {
               console.error("Failed to delete research:", error);
               // You might want to show an alert to the user here
@@ -232,11 +230,11 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
         <View style={styles.formContainer}>
           <Text style={styles.label}>Nome da Pesquisa</Text>
           <TextInput
-            value={researchName}
+            value={research.title}
             mode="outlined"
             textColor="#3F92C5"
             onChangeText={(text) => {
-              setResearchName(text);
+              setResearch({ ...research, title: text });
               if (text.trim()) setNameError("");
             }}
             error={!!nameError}
@@ -279,8 +277,10 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
 
           <Text style={styles.label}>Imagem</Text>
           <PickImageComponent
-            initialImage={pickedImage}
-            onImagePick={setPickedImage}
+            initialImage={research.image}
+            onImagePick={(image) =>
+              setResearch({ ...research, image: image ?? "" })
+            }
           />
 
           <View style={styles.buttonContainer}>
