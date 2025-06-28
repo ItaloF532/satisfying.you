@@ -68,7 +68,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
 
   const fetchResearches = async () => {
     try {
-      console.log("fetchResearches");
       setLoading(true);
       const fetchedResearches = await new FirestoreService().search(
         user?.uid ?? ""
