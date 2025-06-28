@@ -9,7 +9,7 @@ import { Research } from "./HomeScreen";
 interface ResearchReportScreenProps {
   navigation: NavigationProp<any>;
   route: {
-    params: Research;
+    params: { research: Research };
   };
 }
 
@@ -29,7 +29,7 @@ const ResearchReportScreen: React.FC<ResearchReportScreenProps> = ({
   navigation,
   route,
 }) => {
-  const researchData = route.params;
+  const researchData = route.params.research;
 
   const processChartData = () => {
     if (!researchData?.votes || researchData.votes.length === 0) {
@@ -37,7 +37,9 @@ const ResearchReportScreen: React.FC<ResearchReportScreenProps> = ({
     }
 
     const voteCounts = researchData.votes.reduce((acc: any, vote: number) => {
-      acc[vote] = (acc[vote] || 0) + 1;
+      const option = RATING_OPTIONS.find((option) => option.value === vote);
+      if (option) acc[option.label] = (acc[option.label] || 0) + 1;
+
       return acc;
     }, {});
 

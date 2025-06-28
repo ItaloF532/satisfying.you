@@ -15,7 +15,6 @@ import {
 } from "firebase/firestore";
 import { auth, firebaseApp } from "./firebaseConfig";
 import { Research } from "../screens/HomeScreen";
-import { IconName } from "../const/AvailableIcons";
 import { sendPasswordResetEmail } from "firebase/auth";
 
 export class FirestoreService {
@@ -57,14 +56,30 @@ export class FirestoreService {
     }
   }
 
-  async addVote(id: string, vote: string): Promise<void> {
+  async addVote(id: string, vote: number): Promise<void> {
     try {
+      console.log("id", id);
       const researchDoc = doc(this.db, "researches", id);
-      await updateDoc(researchDoc, { votes: arrayUnion(vote) });
+      const docSnap = await getDoc(researchDoc);
+      console.log("docSnap", docSnap.data());
+
+      await updateDoc(researchDoc, {
+        votes: [...(docSnap.data()?.votes || []), vote],
+      });
     } catch (error) {
       console.error("Erro ao adicionar voto:", error);
       throw error;
     }
+  }
+
+  async getResearch(id: string): Promise<Research> {
+    const researchDoc = doc(this.db, "researches", id);
+    const research = await getDoc(researchDoc);
+
+    return {
+      id,
+      ...research.data(),
+    } as Research;
   }
 
   async search(userId: string): Promise<Research[]> {

@@ -4,13 +4,7 @@ import { View, StyleSheet } from "react-native";
 
 interface ThankYouScreenProps {
   navigation: any;
-  route: {
-    params: {
-      id: string;
-      title: string;
-      image: string;
-    };
-  };
+  route: any;
 }
 
 const styles = StyleSheet.create({
@@ -34,8 +28,6 @@ const ThankYouScreen: React.FC<ThankYouScreenProps> = ({
   navigation,
   route,
 }) => {
-  const { id, title, image } = route.params;
-
   useEffect(() => {
     setTimeout(() => {
       navigation.pop();

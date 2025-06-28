@@ -10,7 +10,6 @@ import {
 import { NavigationProp, useFocusEffect } from "@react-navigation/native";
 import { Button, Text } from "react-native-paper";
 import ResearchCardComponent from "../components/ResearchCardComponent";
-import { AVAILABLE_ICONS } from "../const/AvailableIcons";
 import { useAuth } from "../contexts/AuthContext";
 import { FirestoreService } from "../services/FirestoreService";
 

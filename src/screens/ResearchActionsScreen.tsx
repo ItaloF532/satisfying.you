@@ -4,6 +4,7 @@ import { Text, Appbar } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import { Research } from "./HomeScreen";
+import { FirestoreService } from "../services/FirestoreService";
 
 interface ResearchActionsScreenProps {
   navigation: any;
@@ -61,11 +62,19 @@ const ResearchActionsScreen: React.FC<ResearchActionsScreenProps> = ({
   };
 
   const handleCollect = () => {
-    navigation.navigate("SatisfactionCollection", research);
+    navigation.navigate("SatisfactionCollection", {
+      research,
+      onReceivedVotes: async () => {
+        const updatedResearch = await new FirestoreService().getResearch(
+          research.id
+        );
+        setResearch(updatedResearch);
+      },
+    });
   };
 
   const handleReport = () => {
-    navigation.navigate("ResearchReport", route.params);
+    navigation.navigate("ResearchReport", { research });
   };
 
   return (

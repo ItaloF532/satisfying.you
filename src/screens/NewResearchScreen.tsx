@@ -10,7 +10,6 @@ import {
 import { Appbar, Text, TextInput, Button } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { AVAILABLE_ICONS, IconName } from "../const/AvailableIcons";
 import { FirestoreService } from "../services/FirestoreService";
 import { useAuth } from "../contexts/AuthContext";
 import PickImageComponent from "../components/PickImageComponent";

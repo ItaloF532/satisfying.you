@@ -5,15 +5,12 @@ import SatisfactionRatingComponent, {
   RATING_OPTIONS,
 } from "../components/SatisfactionRatingComponent";
 import { FirestoreService } from "../services/FirestoreService";
+import { Research } from "./HomeScreen";
 
 interface SatisfactionCollectionScreenProps {
   navigation: any;
   route: {
-    params: {
-      id: string;
-      title: string;
-      image: string;
-    };
+    params: { research: Research; onReceivedVotes: () => void };
   };
 }
 
@@ -56,14 +53,13 @@ const styles = StyleSheet.create({
 const SatisfactionCollectionScreen: React.FC<
   SatisfactionCollectionScreenProps
 > = ({ navigation, route }) => {
-  const { id, title, image } = route.params;
+  const research = route.params.research;
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (ratingIndex: number) => {
+  const handleSubmit = async (vote: number) => {
     setLoading(true);
     try {
-      const vote = RATING_OPTIONS[ratingIndex].label;
-      await new FirestoreService().addVote(id, vote);
+      await new FirestoreService().addVote(research.id, vote);
       navigation.navigate("ThankYou");
     } catch (error) {
       console.error("Failed to submit vote:", error);
@@ -79,13 +75,16 @@ const SatisfactionCollectionScreen: React.FC<
         <Appbar.BackAction
           iconColor="#573FBA"
           isLeading={false}
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            navigation.goBack();
+            route.params.onReceivedVotes();
+          }}
         />
         <Appbar.Content color="white" title="Coleta de Satisfação" />
       </Appbar.Header>
 
       <View style={styles.content}>
-        <Text style={styles.title}>O que você achou do {title}?</Text>
+        <Text style={styles.title}>O que você achou do {research.title}?</Text>
 
         <View style={styles.ratingContainer}>
           {loading ? (

@@ -11,7 +11,6 @@ import {
 import { Appbar, Text, TextInput, Button } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { AVAILABLE_ICONS, IconName } from "../const/AvailableIcons";
 import { FirestoreService } from "../services/FirestoreService";
 import PickImageComponent from "../components/PickImageComponent";
 import { Research } from "./HomeScreen";
@@ -123,7 +122,6 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
   navigation,
   route,
 }) => {
-  console.log("route", route);
   const [research, setResearch] = useState(route.params.research);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
