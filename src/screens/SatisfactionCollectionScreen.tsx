@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { Appbar, Text, Button } from "react-native-paper";
-import SatisfactionRatingComponent from "../components/SatisfactionRatingComponent";
+import SatisfactionRatingComponent, {
+  RATING_OPTIONS,
+} from "../components/SatisfactionRatingComponent";
+import { FirestoreService } from "../services/FirestoreService";
 
 interface SatisfactionCollectionScreenProps {
   navigation: any;
@@ -54,16 +57,20 @@ const SatisfactionCollectionScreen: React.FC<
   SatisfactionCollectionScreenProps
 > = ({ navigation, route }) => {
   const { id, title, image } = route.params;
-  const [selectedRating, setSelectedRating] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (rating: number) => {
-    // TODO: save action
-    setSelectedRating(rating);
-    navigation.navigate("ThankYou", {
-      id,
-      title,
-      image,
-    });
+  const handleSubmit = async (ratingIndex: number) => {
+    setLoading(true);
+    try {
+      const vote = RATING_OPTIONS[ratingIndex].label;
+      await new FirestoreService().addVote(id, vote);
+      navigation.navigate("ThankYou");
+    } catch (error) {
+      console.error("Failed to submit vote:", error);
+      // Optionally, show an error message to the user
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -81,9 +88,13 @@ const SatisfactionCollectionScreen: React.FC<
         <Text style={styles.title}>O que você achou do {title}?</Text>
 
         <View style={styles.ratingContainer}>
-          <SatisfactionRatingComponent
-            onRatingSelected={(rating) => handleSubmit(rating)}
-          />
+          {loading ? (
+            <ActivityIndicator size="large" color="white" />
+          ) : (
+            <SatisfactionRatingComponent
+              onRatingSelected={(rating) => handleSubmit(rating)}
+            />
+          )}
         </View>
       </View>
     </View>

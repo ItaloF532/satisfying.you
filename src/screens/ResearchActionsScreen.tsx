@@ -70,11 +70,7 @@ const ResearchActionsScreen: React.FC<ResearchActionsScreenProps> = ({
   };
 
   const handleReport = () => {
-    navigation.navigate("ResearchReport", {
-      id,
-      title,
-      image,
-    });
+    navigation.navigate("ResearchReport", route.params);
   };
 
   return (

@@ -140,6 +140,7 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
   const [showIconPicker, setShowIconPicker] = useState(false);
   const [nameError, setNameError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const onChangeDate = (event: any, selectedDate?: Date) => {
     if (event.type === "dismissed") {
@@ -164,10 +165,10 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
 
     setLoading(true);
     try {
-      await FirestoreService.update(id, {
+      await new FirestoreService().update(id, {
         title: researchName,
-        date: selectedDate,
-        icon: selectedIcon,
+        date: selectedDate.toISOString(),
+        image: selectedIcon,
       });
       navigation.goBack();
     } catch (error) {
@@ -189,10 +190,17 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
         },
         {
           text: "Excluir",
-          onPress: () => {
-            // TODO: implement delete action
-
-            navigation.goBack();
+          onPress: async () => {
+            setDeleting(true);
+            try {
+              await new FirestoreService().delete(id);
+              navigation.goBack();
+            } catch (error) {
+              console.error("Failed to delete research:", error);
+              // You might want to show an alert to the user here
+            } finally {
+              setDeleting(false);
+            }
           },
           style: "destructive",
         },
@@ -334,14 +342,20 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
                 alignItems: "center",
                 flexDirection: "column",
               }}
+              disabled={deleting}
             >
-              <MaterialCommunityIcons
-                name="trash-can"
-                size={28}
-                color="white"
-              />
-
-              <Text style={{ color: "white", fontSize: 12 }}>Apagar</Text>
+              {deleting ? (
+                <ActivityIndicator />
+              ) : (
+                <>
+                  <MaterialCommunityIcons
+                    name="trash-can"
+                    size={28}
+                    color="white"
+                  />
+                  <Text style={{ color: "white", fontSize: 12 }}>Apagar</Text>
+                </>
+              )}
             </TouchableOpacity>
           </View>
         </View>

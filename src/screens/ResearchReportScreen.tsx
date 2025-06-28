@@ -1,17 +1,15 @@
 import React from "react";
-import { View, StyleSheet, Dimensions, ScrollView } from "react-native";
-import { Appbar, Text, Button, Card } from "react-native-paper";
+import { View, StyleSheet, Dimensions, ScrollView, Text } from "react-native";
+import { Appbar, Card } from "react-native-paper";
 import { PieChart } from "react-native-chart-kit";
 import { NavigationProp } from "@react-navigation/native";
+import { RATING_OPTIONS } from "../components/SatisfactionRatingComponent";
+import { Research } from "./HomeScreen";
 
 interface ResearchReportScreenProps {
   navigation: NavigationProp<any>;
   route: {
-    params: {
-      id: string;
-      title: string;
-      image: string;
-    };
+    params: Research;
   };
 }
 
@@ -31,48 +29,28 @@ const ResearchReportScreen: React.FC<ResearchReportScreenProps> = ({
   navigation,
   route,
 }) => {
-  const { id, title } = route.params;
+  const researchData = route.params;
 
-  const mockData = {
-    ratings: [
-      { value: 1, count: 5, color: "#FF5252" },
-      { value: 2, count: 8, color: "#FF9800" },
-      { value: 3, count: 12, color: "#FFC107" },
-      { value: 4, count: 25, color: "#4CAF50" },
-      { value: 5, count: 18, color: "#2196F3" },
-    ],
-  };
-
-  const chartData = mockData.ratings.map((item) => {
-    let name = "- ";
-
-    switch (item.value) {
-      case 1:
-        name += "Péssimo";
-        break;
-      case 2:
-        name += "Ruim";
-        break;
-      case 3:
-        name += "Neutro";
-        break;
-      case 4:
-        name += "Bom";
-        break;
-      case 5:
-      default:
-        name += "Excelente";
-        break;
+  const processChartData = () => {
+    if (!researchData?.votes || researchData.votes.length === 0) {
+      return [];
     }
 
-    return {
-      name,
-      population: item.count,
-      color: item.color,
+    const voteCounts = researchData.votes.reduce((acc: any, vote: number) => {
+      acc[vote] = (acc[vote] || 0) + 1;
+      return acc;
+    }, {});
+
+    return RATING_OPTIONS.map((option) => ({
+      name: option.label,
+      population: voteCounts[option.label] || 0,
+      color: option.color,
       legendFontColor: "#FFFFFF",
       legendFontSize: 16,
-    };
-  });
+    })).filter((item) => item.population > 0);
+  };
+
+  const chartData = processChartData();
 
   return (
     <ScrollView style={styles.container}>
@@ -82,25 +60,31 @@ const ResearchReportScreen: React.FC<ResearchReportScreenProps> = ({
           isLeading={false}
           onPress={() => navigation.goBack()}
         />
-        <Appbar.Content color="white" title="Relatório" />
+        <Appbar.Content color="white" title={researchData.title} />
       </Appbar.Header>
 
       <View style={styles.content}>
-        <PieChart
-          data={chartData}
-          width={Dimensions.get("window").width - 40}
-          height={220}
-          absolute
-          accessor="population"
-          paddingLeft="0"
-          backgroundColor="transparent"
-          chartConfig={{
-            backgroundColor: "#373775",
-            backgroundGradientFrom: "#373775",
-            backgroundGradientTo: "#373775",
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          }}
-        />
+        {chartData.length > 0 ? (
+          <PieChart
+            data={chartData}
+            width={Dimensions.get("window").width - 40}
+            height={220}
+            absolute
+            accessor="population"
+            paddingLeft="0"
+            backgroundColor="transparent"
+            chartConfig={{
+              backgroundColor: "#373775",
+              backgroundGradientFrom: "#373775",
+              backgroundGradientTo: "#373775",
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            }}
+          />
+        ) : (
+          <Text style={{ color: "white", textAlign: "center", fontSize: 18 }}>
+            Ainda não há votos para esta pesquisa.
+          </Text>
+        )}
       </View>
     </ScrollView>
   );

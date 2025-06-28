@@ -12,6 +12,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AVAILABLE_ICONS, IconName } from "../const/AvailableIcons";
 import { FirestoreService } from "../services/FirestoreService";
+import { useAuth } from "../contexts/AuthContext";
 
 interface NewResearchScreenProps {
   navigation: any;
@@ -112,6 +113,8 @@ const styles = StyleSheet.create({
 const NewResearchScreen: React.FC<NewResearchScreenProps> = ({
   navigation,
 }) => {
+  const { user } = useAuth();
+
   const [researchName, setResearchName] = useState("");
 
   const [selectedIcon, setSelectedIcon] = useState<IconName>("emoticon");
@@ -141,10 +144,13 @@ const NewResearchScreen: React.FC<NewResearchScreenProps> = ({
 
     setLoading(true);
     try {
-      await FirestoreService.save({
+      await new FirestoreService().save({
         title: researchName,
-        date: selectedDate,
-        icon: selectedIcon,
+        date: selectedDate.toISOString(),
+        image: selectedIcon,
+        votes: [],
+        description: "",
+        userId: user?.uid ?? "",
       });
       navigation.goBack();
     } catch (error) {

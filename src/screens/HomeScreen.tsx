@@ -21,9 +21,11 @@ interface HomeScreenProps {
 
 export type Research = {
   id: string;
-  title: string;
   date: string;
   image: string;
+  title: string;
+  votes: number[];
+  userId: string;
   description: string;
 };
 
@@ -60,14 +62,16 @@ const styles = StyleSheet.create({
 });
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const [researches, setResearches] = useState<Research[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchResearches = async () => {
     try {
       setLoading(true);
-      const fetchedResearches = await FirestoreService.search();
+      const fetchedResearches = await new FirestoreService().search(
+        user?.uid ?? ""
+      );
       setResearches(fetchedResearches);
     } catch (error) {
       console.error("Failed to fetch researches:", error);

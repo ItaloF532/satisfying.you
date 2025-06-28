@@ -15,6 +15,39 @@ type IconName =
   | "emoticon-happy-outline"
   | "emoticon-excited-outline";
 
+export const RATING_OPTIONS = [
+  {
+    value: 1,
+    label: "Péssimo",
+    icon: "emoticon-cry-outline" as IconName,
+    color: "#E63946",
+  },
+  {
+    value: 2,
+    label: "Ruim",
+    icon: "emoticon-sad-outline" as IconName,
+    color: "#F94144",
+  },
+  {
+    value: 3,
+    label: "Neutro",
+    icon: "emoticon-neutral-outline" as IconName,
+    color: "#FFB703",
+  },
+  {
+    value: 4,
+    label: "Bom",
+    icon: "emoticon-happy-outline" as IconName,
+    color: "#2A9D8F",
+  },
+  {
+    value: 5,
+    label: "Excelente",
+    icon: "emoticon-excited-outline" as IconName,
+    color: "#2A9D8F",
+  },
+];
+
 const styles = StyleSheet.create({
   container: {
     width: "100%",
@@ -51,55 +84,22 @@ const SatisfactionRatingComponent: React.FC<
 > = ({ title = "O que você achou?", onRatingSelected }) => {
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
 
-  const ratings = [
-    {
-      value: 1,
-      label: "Péssimo",
-      icon: "emoticon-cry-outline" as IconName,
-      color: "#E63946",
-    },
-    {
-      value: 2,
-      label: "Ruim",
-      icon: "emoticon-sad-outline" as IconName,
-      color: "#F94144",
-    },
-    {
-      value: 3,
-      label: "Neutro",
-      icon: "emoticon-neutral-outline" as IconName,
-      color: "#FFB703",
-    },
-    {
-      value: 4,
-      label: "Bom",
-      icon: "emoticon-happy-outline" as IconName,
-      color: "#2A9D8F",
-    },
-    {
-      value: 5,
-      label: "Excelente",
-      icon: "emoticon-excited-outline" as IconName,
-      color: "#2A9D8F",
-    },
-  ];
-
-  const handleSelect = (rating: number) => {
-    setSelectedRating(rating);
-    onRatingSelected(rating);
+  const handleSelect = (index: number) => {
+    setSelectedRating(index);
+    onRatingSelected(index + 1);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.ratingContainer}>
-        {ratings.map((rating) => (
+        {RATING_OPTIONS.map((rating, index) => (
           <TouchableOpacity
             key={rating.value}
             style={[
               styles.ratingOption,
-              selectedRating === rating.value && styles.selectedOption,
+              selectedRating === index && styles.selectedOption,
             ]}
-            onPress={() => handleSelect(rating.value)}
+            onPress={() => handleSelect(index)}
           >
             <MaterialCommunityIcons
               name={rating.icon}
