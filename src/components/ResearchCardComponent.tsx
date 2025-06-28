@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, Text } from "react-native-paper";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { IconName } from "../const/AvailableIcons";
 
@@ -20,14 +20,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   content: {
-    padding: 10,
-    height: 190,
+    bottom: 0,
+    height: 150,
+    padding: 8,
     alignItems: "flex-start",
     justifyContent: "flex-end",
   },
   card: {
-    height: 340,
-    maxWidth: 340,
+    width: 300,
+    height: 300,
+    maxWidth: 300,
     borderRadius: 10,
     marginVertical: 8,
     marginHorizontal: 16,
@@ -47,18 +49,23 @@ const ResearchCardComponent: React.FC<ResearchCardComponentProps> = ({
   description,
   image,
 }) => {
+  const isBase64 = image?.startsWith("data:image");
+
   return (
     <Card style={styles.card}>
       <View style={styles.image}>
-        <MaterialCommunityIcons
-          name={image as IconName}
-          size={100}
-          color="#3F92C5"
-        />
+        {isBase64 ? (
+          <Image
+            source={{ uri: image }}
+            style={styles.image}
+            resizeMode="cover"
+          />
+        ) : (
+          <></>
+        )}
       </View>
       <Card.Content style={styles.content}>
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
       </Card.Content>
     </Card>
   );

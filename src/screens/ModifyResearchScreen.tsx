@@ -13,6 +13,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AVAILABLE_ICONS, IconName } from "../const/AvailableIcons";
 import { FirestoreService } from "../services/FirestoreService";
+import PickImageComponent from "../components/PickImageComponent";
 
 interface ModifyResearchScreenProps {
   navigation: any;
@@ -131,13 +132,8 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
   const [researchName, setResearchName] = useState(title);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [pickedImage, setPickedImage] = useState<string | null>(image);
 
-  const defaultIcon: IconName = AVAILABLE_ICONS.includes(image as IconName)
-    ? (image as IconName)
-    : "emoticon";
-
-  const [selectedIcon, setSelectedIcon] = useState<IconName>(defaultIcon);
-  const [showIconPicker, setShowIconPicker] = useState(false);
   const [nameError, setNameError] = useState("");
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -168,7 +164,7 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
       await new FirestoreService().update(id, {
         title: researchName,
         date: selectedDate.toISOString(),
-        image: selectedIcon,
+        image: pickedImage ?? "",
       });
       navigation.goBack();
     } catch (error) {
@@ -281,44 +277,11 @@ const ModifyResearchScreen: React.FC<ModifyResearchScreenProps> = ({
             renderDatePicker()
           )}
 
-          <Text style={styles.label}>Ícone da Pesquisa</Text>
-          <TouchableOpacity
-            style={styles.iconSelector}
-            onPress={() => setShowIconPicker(!showIconPicker)}
-          >
-            <MaterialCommunityIcons
-              name={selectedIcon}
-              size={36}
-              color="#3F92C5"
-            />
-            <Text style={styles.iconSelectorText}>Selecionar ícone</Text>
-          </TouchableOpacity>
-
-          {showIconPicker && (
-            <View style={styles.iconGrid}>
-              {AVAILABLE_ICONS.sort(() => 0.5 - Math.random())
-                .slice(0, 8)
-                .map((icon) => (
-                  <TouchableOpacity
-                    key={icon}
-                    style={[
-                      styles.iconItem,
-                      selectedIcon === icon && styles.selectedIconItem,
-                    ]}
-                    onPress={() => {
-                      setSelectedIcon(icon);
-                      setShowIconPicker(false);
-                    }}
-                  >
-                    <MaterialCommunityIcons
-                      name={icon}
-                      size={36}
-                      color="#3F92C5"
-                    />
-                  </TouchableOpacity>
-                ))}
-            </View>
-          )}
+          <Text style={styles.label}>Imagem</Text>
+          <PickImageComponent
+            initialImage={pickedImage}
+            onImagePick={setPickedImage}
+          />
 
           <View style={styles.buttonContainer}>
             <Button

@@ -13,6 +13,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AVAILABLE_ICONS, IconName } from "../const/AvailableIcons";
 import { FirestoreService } from "../services/FirestoreService";
 import { useAuth } from "../contexts/AuthContext";
+import PickImageComponent from "../components/PickImageComponent";
 
 interface NewResearchScreenProps {
   navigation: any;
@@ -116,9 +117,7 @@ const NewResearchScreen: React.FC<NewResearchScreenProps> = ({
   const { user } = useAuth();
 
   const [researchName, setResearchName] = useState("");
-
-  const [selectedIcon, setSelectedIcon] = useState<IconName>("emoticon");
-  const [showIconPicker, setShowIconPicker] = useState(false);
+  const [pickedImage, setPickedImage] = useState<string | null>(null);
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -147,10 +146,10 @@ const NewResearchScreen: React.FC<NewResearchScreenProps> = ({
       await new FirestoreService().save({
         title: researchName,
         date: selectedDate.toISOString(),
-        image: selectedIcon,
+        image: pickedImage ?? "",
         votes: [],
-        description: "",
         userId: user?.uid ?? "",
+        description: "",
       });
       navigation.goBack();
     } catch (error) {
@@ -234,44 +233,8 @@ const NewResearchScreen: React.FC<NewResearchScreenProps> = ({
             renderDatePicker()
           )}
 
-          <Text style={styles.label}>Ícone da Pesquisa</Text>
-          <TouchableOpacity
-            style={styles.iconSelector}
-            onPress={() => setShowIconPicker(!showIconPicker)}
-          >
-            <MaterialCommunityIcons
-              name={selectedIcon}
-              size={36}
-              color="#3F92C5"
-            />
-            <Text style={styles.iconSelectorText}>Selecionar ícone</Text>
-          </TouchableOpacity>
-
-          {showIconPicker && (
-            <View style={styles.iconGrid}>
-              {AVAILABLE_ICONS.sort(() => 0.5 - Math.random())
-                .slice(0, 8)
-                .map((icon) => (
-                  <TouchableOpacity
-                    key={icon}
-                    style={[
-                      styles.iconItem,
-                      selectedIcon === icon && styles.selectedIconItem,
-                    ]}
-                    onPress={() => {
-                      setSelectedIcon(icon);
-                      setShowIconPicker(false);
-                    }}
-                  >
-                    <MaterialCommunityIcons
-                      name={icon}
-                      size={36}
-                      color="#3F92C5"
-                    />
-                  </TouchableOpacity>
-                ))}
-            </View>
-          )}
+          <Text style={styles.label}>Imagem</Text>
+          <PickImageComponent onImagePick={setPickedImage} />
 
           <Button
             mode="contained"

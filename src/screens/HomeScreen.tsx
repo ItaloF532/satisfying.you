@@ -22,10 +22,10 @@ interface HomeScreenProps {
 export type Research = {
   id: string;
   date: string;
-  image: string;
   title: string;
   votes: number[];
   userId: string;
+  image: string;
   description: string;
 };
 
@@ -63,8 +63,8 @@ const styles = StyleSheet.create({
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   const { user, signOut } = useAuth();
-  const [researches, setResearches] = useState<Research[]>([]);
   const [loading, setLoading] = useState(true);
+  const [researches, setResearches] = useState<Research[]>([]);
 
   const fetchResearches = async () => {
     try {
@@ -80,12 +80,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchResearches();
-    }, [])
-  );
-
   const handleResearchPress = (research: Research) => {
     navigation.navigate("ResearchActions", research);
   };
@@ -93,6 +87,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
   const handleNewResearch = () => {
     navigation.navigate("NewResearch");
   };
+
+  useEffect(() => {
+    fetchResearches();
+  }, []);
 
   useEffect(() => {
     const backAction = () => {
@@ -135,12 +133,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, route }) => {
           showsHorizontalScrollIndicator={true}
           data={researches}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
+          renderItem={({ item }: { item: Research }) => (
             <TouchableOpacity onPress={() => handleResearchPress(item)}>
               <ResearchCardComponent
                 title={item.title}
-                description={item.description}
                 image={item.image}
+                description={item.description}
               />
             </TouchableOpacity>
           )}

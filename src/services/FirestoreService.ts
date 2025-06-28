@@ -70,11 +70,11 @@ export class FirestoreService {
 
   async search(userId: string): Promise<Research[]> {
     try {
+      const researches: Research[] = [];
       const querySnapshot = await getDocs(
         query(this.researchCollection, where("userId", "==", userId))
       );
 
-      const researches: Research[] = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
 
@@ -82,7 +82,7 @@ export class FirestoreService {
           id: doc.id,
           title: data.title,
           date: data.date,
-          image: data.icon,
+          image: data.image,
           description: data.description,
           votes: data.votes || [],
           userId: data.userId,
